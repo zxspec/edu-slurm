@@ -17,4 +17,10 @@ docker images -q
 docker rmi \$(docker images -q)
 
 docker inspect <id>
-docker run --rm -p 80:8080 -d nginx
+docker run --rm -p <HOST_PORT>:<CONTAINER_PORT> -d nginx
+docker run --rm --name nginx-zx-1 -p 8080:80 -d nginx
+
+docker exec -it nginx-zx-1 /bin/bash
+
+docker run --name redis-1 --rm -v </path/to/host/folder/>:</path/in/container/> -d redis
+docker run --name redis-1 --rm -v ~/repos/edu-slurm/lecture02/volumes/redis/:/data/ -d redis
