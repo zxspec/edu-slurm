@@ -13,6 +13,8 @@ services:
         condition: service_healthy
   redis:
     build: ./db/
+    mem_limit: 524288000
+    cpus: 0.5
     volumes:
       - type: volume
         source: mydata
