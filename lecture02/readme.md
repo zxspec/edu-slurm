@@ -41,6 +41,8 @@ _None of the containers can share this data if you use the local volume driver._
 
 docker run --name redis-3 --rm --mount source=my-vol,target=/app-data,readonly -d redis
 
+docker run --name redis-2 --rm --mount type=volume,source=my-vol,target=/app-data -d redis
+
 ## shared volumes
 
 TBD
