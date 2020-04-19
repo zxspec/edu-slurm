@@ -1,0 +1,27 @@
+version: "2.4"
+services:
+  web:
+    build: ./web/
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
+    environment:
+      FLASK_ENV: development
+    depends_on:
+      redis:
+        condition: service_healthy
+  redis:
+    build: ./db/
+    volumes:
+      - type: volume
+        source: mydata
+        target: /data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+      start_period: 1s
+volumes:
+  mydata:
