@@ -36,4 +36,7 @@ kubectl get replicasets
 kubectl apply -f my-replicaset-3.yaml
 kubectl get replicasets
 
+kubectl scale --replicas=2 replicaset web
+kubectl describe replicasets web
+kubectl get pod --show-labels
 ```
