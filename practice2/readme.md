@@ -2,6 +2,7 @@
 ```
 kubectl create -f my-pod.yaml
 kubectl get pod
+kubectl get pod my-pody -o wide
 kubectl describe pod my-pody
 ```
 
