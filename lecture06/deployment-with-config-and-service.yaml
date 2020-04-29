@@ -79,3 +79,15 @@ spec:
       - name: config
         configMap:
           name: my-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  selector:
+    app: my-app
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP

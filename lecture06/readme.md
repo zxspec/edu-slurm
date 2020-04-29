@@ -1,4 +1,4 @@
-## ConfigMap
+u## ConfigMap
 
 ```
 kubectl apply -f configmap.yaml -f deployment-with-configmap.yaml
@@ -95,4 +95,54 @@ nslookup web
 # Name:   web.default.svc.cluster.local
 # Address: 10.152.183.214
 
+```
+    web.default.svc.cluster.local
+    ^^^   ^^^
+    svc    ns
+
+## Ingress
+In order for the Ingress resource to work, the cluster must have an ingress controller running.
+```
+# microk8s setup
+microk8s enable ingress
+microk8s status | grep ingress
+. . .
+# ingress: enabled
+
+curl 127.0.0.1
+. . .
+# <html>
+# <head><title>503 Service Temporarily Unavailable</title></head>
+# <body>
+# <center><h1>503 Service Temporarily Unavailable</h1></center>
+# <hr><center>openresty/1.15.8.1</center>
+# </body>
+# </html>
+
+# deploy pods and service
+# it will be accessible by ip
+kubectl get svc web
+. . .
+# NAME   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+# web    ClusterIP   10.152.183.170   <none>        80/TCP    3m31s
+curl 10.152.183.170
+. . .
+# my-deployment-5fb96f8d6d-6j72g
+
+# micro ip 127.0.0.1
+# but sevice is available by ip
+curl 127.0.0.1
+. . .
+# <html>
+# <head><title>404 Not Found</title></head>
+# <body>
+# <center><h1>404 Not Found</h1></center>
+# <hr><center>openresty/1.15.8.1</center>
+# </body>
+# </html>
+
+# while service is accessible via host name
+curl micro
+. . .
+#my-deployment-5fb96f8d6d-6j72g
 ```
