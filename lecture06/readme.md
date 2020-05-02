@@ -1,4 +1,11 @@
-u## ConfigMap
+## kubectl explain
+
+```
+kubectl explain deployment.status.availableReplicas
+kubectl explain deployment.spec.strategy
+```
+
+## ConfigMap
 
 ```
 kubectl apply -f configmap.yaml -f deployment-with-configmap.yaml
@@ -145,4 +152,66 @@ curl 127.0.0.1
 curl micro
 . . .
 #my-deployment-5fb96f8d6d-6j72g
+```
+
+## PV, PVC, Provisioners
+PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.
+PersistentVolumeClaim (PVC) is a request for storage by a user.
+```
+#check that microk8s storage addon is enabled
+microk8s status | grep storage
+# enable storage addon (if required)
+microk8s enable storage
+
+# available storage classes
+kubectl get storageclasses.storage.k8s.io
+# OR
+kubectl get sc
+. . .
+
+# NAME                          PROVISIONER            RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+# microk8s-hostpath (default)   microk8s.io/hostpath   Delete          Immediate           false                  5d1h
+
+kubectl get pv
+# show info about PVC used to create PV 
+kubectl get pv <pv_name> -o yaml | grep -i -A 6 claimRef
+
+kubectl get pvc my-claim -o wide
+```
+
+## Practice-Fileshare
+
+### Dockerfile
+FYI `set -ex`
+- `-e` exit immediately if a command exits with a non-zero status.
+- `-x`  print commands and their arguments as they are executed.
+
+Details: http://linuxcommand.org/lc3_man_pages/seth.html
+
+### Kube folder
+```
+kubectl apply -f .
+curl -i micro
+curl -i micro/files/
+
+# upload file
+curl -i micro/files/ -T confignmap.yaml
+curl -i micro/files/
+. . .
+# HTTP/1.1 200 OK
+# Server: openresty/1.15.8.1
+# Date: Sat, 02 May 2020 14:03:41 GMT
+# Content-Type: text/html
+# Transfer-Encoding: chunked
+# Connection: keep-alive
+# Vary: Accept-Encoding
+# 
+# <html>
+# <head><title>Index of /files/</title></head>
+# <body bgcolor="white">
+# <h1>Index of /files/</h1><hr><pre><a href="../">../</a>
+# <a href="configmap.yaml">configmap.yaml</a>                                     02-May-2020 14:03                 522
+# </pre><hr></body>
+# </html>
+
 ```
