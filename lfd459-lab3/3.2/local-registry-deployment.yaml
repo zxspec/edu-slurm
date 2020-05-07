@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:        
+      - image: registry:2
+        name: registry
+        env:
+          - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+            value: /data
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 200Mi
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /v2/
+            port: 5000
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /v2/
+            port: 5000
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+          initialDelaySeconds: 5
+        volumeMounts:
+          - mountPath: /data
+            name: local-registry
+      restartPolicy: Always
+      volumes:
+      - name: local-registry
+        persistentVolumeClaim:
+          claimName: local-registry
