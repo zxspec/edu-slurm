@@ -1,3 +1,5 @@
+## Basics
+```
 docker build -t "hello" .
 docker run hello
 
@@ -25,10 +27,12 @@ docker exec -it nginx-zx-1 /bin/bash
 docker run --name redis-1 --rm -v </path/to/host/folder/>:</path/in/container/> -d redis
 docker run --name redis-1 --rm -v ~/repos/edu-slurm/lecture02/volumes/redis/:/data/ -d redis
 
-# Volumes
+```
+
+## Volumes
 
 https://docs.docker.com/storage/volumes/
-
+```
 docker volume create my-vol
 docker volume ls
 docker volume inspect my-vol
@@ -36,13 +40,16 @@ docker volume rm my-vol
 
 docker run --name redis-2 --rm --mount source=my-vol,target=/app-data -d redis
 docker volume inspect my-vol
+```
 
 _None of the containers can share this data if you use the local volume driver._
 
+```
 docker run --name redis-3 --rm --mount source=my-vol,target=/app-data,readonly -d redis
 
 docker run --name redis-2 --rm --mount type=volume,source=my-vol,target=/app-data -d redis
 
+```
 ## shared volumes
 
 TBD
