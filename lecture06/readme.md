@@ -137,7 +137,7 @@ curl 10.152.183.170
 # my-deployment-5fb96f8d6d-6j72g
 
 # micro ip 127.0.0.1
-# but sevice is available by ip
+# but sevice is NOT available by only ip
 curl 127.0.0.1
 . . .
 # <html>
