@@ -1,3 +1,7 @@
+# Lecture 8
+
+https://github.com/southbridgeio/slurm-school-k8s/blob/master/5.Kubernetes_inside/5.kubernetes_inside.pdf
+
 ## Service is a set of iptables rules
 
 ```
