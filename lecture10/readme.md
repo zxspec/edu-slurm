@@ -78,3 +78,38 @@ kubectl get po -o wide
 # node-name-wn2vp   1/1     Running       0          26s   10.0.4.3    k8s-master-3.local    <none>           <none>
 
 ```
+
+## StatefulSet
+
+### Storage Classes
+Check that local-storage class is available, since it is used in an example below.
+```
+kubectl get storageclasses
+. . .
+# NAME            PROVISIONER                    AGE
+# local-storage   kubernetes.io/no-provisioner   4s
+```
+Add local-storage class if required
+```
+kubectl create -f local-storage-class.yaml 
+. . .
+# storageclass.storage.k8s.io/local-storage created
+```
+Local volumes do __not__ currently support dynamic provisioning, however a StorageClass should still be created to delay volume binding until Pod scheduling.
+Without dynamic provisioning PVC would take all PV space after binding PVC to it. 
+For instance, 10GB PV will be used even if PVC is for 1GB.
+
+### Persistant Volume
+If PersistantVolume is not available then you would see following error in pod description:
+```
+kubectl describe pod base-0
+. . . 
+# Events:
+#  ----     ------            ----       ----                       -------
+#  ----     ------            ----       ----                       -------
+#  Warning  FailedScheduling  <unknown>  default-scheduler          0/6 nodes are available: 2 node(s) didn't find available persistent volumes to bind, 4 node(s) had taints that the pod didn't tolerate.
+```
+Add one more persistent volume
+```
+kubectl create -f pv-volume-<N>.yaml
+```
