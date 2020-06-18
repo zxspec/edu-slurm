@@ -28,6 +28,16 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /data
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - base
+              topologyKey: kubernetes.io/hostname
   volumeClaimTemplates:
     - metadata:
         name: data

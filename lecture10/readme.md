@@ -109,7 +109,47 @@ kubectl describe pod base-0
 #  ----     ------            ----       ----                       -------
 #  Warning  FailedScheduling  <unknown>  default-scheduler          0/6 nodes are available: 2 node(s) didn't find available persistent volumes to bind, 4 node(s) had taints that the pod didn't tolerate.
 ```
+https://stackoverflow.com/questions/52668938/pod-has-unbound-persistentvolumeclaims
+
 Add one more persistent volume
 ```
 kubectl create -f pv-volume-<N>.yaml
+```
+
+Scale statefulset
+```
+kubectl scale statefulset base
+```
+
+### Affinity and AntiAffiniti
+https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+
+In `statefulset-with-pod-affinity.yaml` a podAntiAffinity is being provided.
+The pod anti-affinity rule says that the pod cannot be scheduled onto a node if that node is in the same zone as a pod with label having key "app" and value "base".
+`kubernetes.io/hostname` is a node's pre-populated standard label.
+https://kubernetes.io/docs/reference/kubernetes-api/labels-annotations-taints/#kubernetes-io-hostname
+
+```
+kubectl apply -f statefulset-with-pod-affinity.yaml
+kubectl get po
+. . .
+# NAME     READY   STATUS    RESTARTS   AGE
+# base-0   1/1     Running   0          7m45s
+# base-1   1/1     Running   0          7m43s
+# base-2   0/1     Pending   0          7m40s
+
+kubectl describe po base-2
+. . .
+Events:
+  Type     Reason            Age        From               Message
+  ----     ------            ----       ----               -------
+  Warning  FailedScheduling  <unknown>  default-scheduler  0/6 nodes are available: 2 node(s) didn't match pod affinity/anti-affinity, 2 node(s) didn't satisfy existing pods anti-affinity rules, 4 node(s) had taints that the pod didn't tolerate.
+
+kubectl describe node k8s-node-1 | grep -i label -A 6
+. . .
+# Labels:             beta.kubernetes.io/arch=amd64
+#                     beta.kubernetes.io/os=linux
+#                     kubernetes.io/arch=amd64
+#                     kubernetes.io/hostname=k8s-node-1.local
+#                                     ^^^
 ```
