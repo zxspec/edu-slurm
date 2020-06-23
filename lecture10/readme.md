@@ -153,3 +153,56 @@ kubectl describe node k8s-node-1 | grep -i label -A 6
 #                     kubernetes.io/hostname=k8s-node-1.local
 #                                     ^^^
 ```
+
+### Diagnostics
+Pod logs:
+```
+kubectl describe po base-0
+```
+Services:
+```
+kubectl get svc
+```
+Endpoints:
+```
+kubectl get ep
+```
+DNS
+```
+kubectl run -it --rm --image amouat/network-utils net-utils bash
+
+nslookup base 
+. . .
+# Server:         169.254.25.10        
+# Address:        169.254.25.10#53     
+# 
+# Name:   base.default.svc.zxspec.local
+# Address: 10.0.3.28
+# Name:   base.default.svc.zxspec.local
+# Address: 10.0.1.23
+
+nslookup base-0.base
+. . .
+# Server:         169.254.25.10
+# Address:        169.254.25.10#53
+# 
+# Name:   base-0.base.default.svc.zxspec.local
+# Address: 10.0.1.23
+
+nslookup base-1.base
+. . .
+# Server:         169.254.25.10
+# Address:        169.254.25.10#53
+# 
+# Name:   base-1.base.default.svc.zxspec.local
+# Address: 10.0.3.28
+
+# no dns records for pods not in "ready" status
+nslookup base-2.base
+. . .
+# Server:         169.254.25.10
+# Address:        169.254.25.10#53
+# 
+# ** server can't find base-2.base: NXDOMAIN
+
+```
