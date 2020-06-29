@@ -4,11 +4,19 @@ https://github.com/southbridgeio/slurm-school-k8s/blob/master/7.Advanced_abstrac
 ## Jobs
 https://kubernetes.io/docs/concepts/workloads/controllers/job/
 
+_backoffLimit_ - the number of retries before considering a Job as failed
+```
+backoffLimit: 10
+```
+_activeDeadlineSeconds_ - applies to the duration of the job, no matter how many Pods are created
+```
+activeDeadlineSeconds: 60
+```
+
 Restart policy is applicable to Pods and not to a Job.
 ```
       restartPolicy: Never
 ```
-
 
 ```
 kubectl describe jobs.batch hello
